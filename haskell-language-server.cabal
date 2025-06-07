@@ -1818,6 +1818,61 @@ test-suite hls-notes-plugin-tests
     , hls-test-utils == 2.11.0.0
   default-extensions: OverloadedStrings
 
+-----------------------------
+-- tasty plugin
+-----------------------------
+
+flag tasty
+  description: Enable tasty plugin
+  default:     True
+  manual:      True
+
+common tasty
+  if flag(tasty)
+    build-depends: haskell-language-server:hls-tasty-plugin
+    cpp-options: -Dhls_tasty
+
+library hls-tasty-plugin
+  import:           defaults, pedantic, warnings
+  if !flag(tasty)
+    buildable: False
+  exposed-modules:    Ide.Plugin.Tasty
+  other-modules:
+  hs-source-dirs:     plugins/hls-tasty-plugin/src
+  build-depends:
+    , aeson
+    , containers
+    , ghc
+    , ghc-exactprint  >= 1.5 && < 1.13.0.0
+    , ghcide          == 2.11.0.0
+    , hls-graph
+    , hls-plugin-api  == 2.11.0.0
+    , lsp
+    , text
+
+  default-extensions:
+    DataKinds
+    OverloadedStrings
+
+test-suite hls-tasty-plugin-tests
+  import:           defaults, pedantic, test-defaults, warnings
+  if !flag(tasty)
+    buildable: False
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   plugins/hls-tasty-plugin/test
+  main-is:          Main.hs
+  build-depends:
+    , aeson
+    , containers
+    , extra
+    , filepath
+    , haskell-language-server:hls-tasty-plugin
+    , hls-test-utils == 2.11.0.0
+    , hls-plugin-api == 2.11.0.0
+    , lens
+    , lsp-types
+    , text
+
 ----------------------------
 ----------------------------
 -- HLS
